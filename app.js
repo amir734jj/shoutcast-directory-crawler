@@ -7,7 +7,7 @@ const { chunkPromise, PromiseFlavor } = require('chunk-promise');
 async function getGenres() {
     const {data} = await axios.get('https://directory.shoutcast.com/');
     const $ = cheerio.load(data);
-    return $('a').map((index, el) => $(el).attr('href')).toArray()
+    return $('a').map((_, el) => $(el).attr('href')).toArray()
         .filter(x => x)
         .filter(x => x.startsWith('/Genre?name='))
         .map(x => x.replace('/Genre?name=', ''))
