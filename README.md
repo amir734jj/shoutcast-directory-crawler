@@ -4,3 +4,7 @@ I wrote this app to quickly crawl [shoutcast directory website](https://director
 
 
 The reason I wrote this script is because I requested an access to get `apiKey` or something but I have not received any response in months.
+
+To download m3u file use the following pattern (replace ID with shoutcast unique ID for each radio):
+
+http://yp.shoutcast.com/sbin/tunein-station.m3u?id=99241165
