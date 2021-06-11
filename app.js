@@ -46,4 +46,4 @@ async function main() {
     await fs.writeFile('shoutcast-directory.json', JSON.stringify(attributedGenres, null, 2), 'utf8');
 }
 
-main().then();
+main();
