@@ -3,7 +3,7 @@ name: Crawl and Release
 on:
   push:
     branches:
-      - develop
+      - master
 
 jobs:
   crawl-and-release:
