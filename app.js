@@ -40,7 +40,7 @@ async function categorizeGenres(genres) {
     genre,
     attributes: await getRadioByGenre(genre),
   })), {
-    concurrent: 1,
+    concurrent: 5,
     promiseFlavor: PromiseFlavor.PromiseAll,
   });
   return attributesGenres.reduce((acc, x) => {
@@ -93,19 +93,18 @@ async function filterByAvailablity(attributedGenres) {
 
     await chunkPromise(streams.map((stream) => async () => {
       const urls = await downloadM3a(stream.ID);
-      let collected = false;
       // eslint-disable-next-line no-restricted-syntax
       for (const url of urls) {
         // eslint-disable-next-line no-await-in-loop
-        if (!collected && url && await streamUrlIsValid(url)) {
+        if (url && await streamUrlIsValid(url)) {
           availableStreams.push({ ...stream, url });
-          collected = true;
+          break;
         }
       }
 
       progressBar.increment();
     }), {
-      concurrent: 10,
+      concurrent: 25,
       promiseFlavor: PromiseFlavor.PromiseAll,
     });
 
@@ -115,7 +114,7 @@ async function filterByAvailablity(attributedGenres) {
 
     progressBar.updateETA();
   }), {
-    concurrent: 5,
+    concurrent: 10,
     promiseFlavor: PromiseFlavor.PromiseAll,
   });
 
