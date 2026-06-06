@@ -9,7 +9,10 @@ const pt = require('promise-timeout');
 const axiosTimeout = 3000;
 const promiseTimeout = 5000;
 
-const progressBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+const isCI = !!process.env.CI;
+const progressBar = isCI
+  ? { start(total) { this.total = total; this.current = 0; }, increment() { this.current++; if (this.current % 50 === 0 || this.current === this.total) console.log(`Progress: ${this.current}/${this.total}`); }, updateETA() {}, stop() { console.log(`Done: ${this.current}/${this.total}`); } }
+  : new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
 async function getGenres() {
   const { data } = await axios.get('https://directory.shoutcast.com/');
