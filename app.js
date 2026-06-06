@@ -58,8 +58,20 @@ async function downloadM3a(id) {
 
 async function streamUrlIsValid(url) {
   try {
-    await pt.timeout(axios.head(url, { timeout: axiosTimeout }), promiseTimeout);
-    return true;
+    const response = await pt.timeout(axios.get(url, {
+      timeout: axiosTimeout,
+      responseType: 'stream',
+      headers: { 'Icy-MetaData': '1' },
+    }), promiseTimeout);
+
+    const { headers } = response;
+    const contentType = (headers['content-type'] || '').toLowerCase();
+    const hasIcyHeaders = Object.keys(headers).some((key) => key.toLowerCase().startsWith('icy-'));
+    const isAudioStream = contentType.startsWith('audio/');
+
+    response.data.destroy();
+
+    return hasIcyHeaders || isAudioStream;
   } catch (_) {
     return false;
   }
