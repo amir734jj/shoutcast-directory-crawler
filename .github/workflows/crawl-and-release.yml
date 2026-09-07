@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - master
+  schedule:
+    - cron: '0 0 * * *'
+
+permissions:
+  contents: write
 
 jobs:
   crawl-and-release:
@@ -24,16 +29,14 @@ jobs:
       - name: Run crawler
         run: npm start
 
-      - name: Generate release tag
-        id: tag
-        run: echo "tag=v$(date +'%Y.%m.%d-%H%M%S')" >> "$GITHUB_OUTPUT"
-
-      - name: Create Release
+      - name: Update latest release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.tag.outputs.tag }}
-          name: Shoutcast Directory ${{ steps.tag.outputs.tag }}
+          tag_name: latest
+          name: Shoutcast Directory (Latest)
           body: Automated crawl of the Shoutcast directory.
           files: shoutcast-directory.json
+          overwrite_files: true
+          make_latest: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
